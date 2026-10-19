@@ -16,17 +16,19 @@
   const fight = new R.Fight();
 
   // ---- handling one chat line (from Alt1 or the test box) ------------------
-  const seen = [];                       // recent lines, so a re-read line counts once
+  // Alt1's chatbox reader already returns only NEW lines, so no de-duplication here.
+  const recent = [];                     // last lines read, for the diagnosis box
   function handleLine(raw) {
     const line = String(raw || "").trim();
     if (!line) return;
-    if (seen.includes(line)) return;
-    seen.push(line); if (seen.length > 80) seen.shift();
+    const m = C.match(line);
+    recent.push((m ? "✓ " : "· ") + line);
+    if (recent.length > 8) recent.shift();
+    $("debug").textContent = recent.join("\n");
+    if (!m) return;
 
-    if (C.isKillStart(line)) { fight.start(); render(); return; }
-    const p = C.parse(line);
-    if (!p) return;
-    if (fight.onCall(p.knight, p.text, Date.now())) render();
+    if (m.kind === "start") { fight.start(); render(); return; }
+    if (fight.onCall(m.knight, m.call, Date.now())) render();
   }
 
   // ---- UI -------------------------------------------------------------------

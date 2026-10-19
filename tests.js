@@ -103,5 +103,27 @@ eq(C.parse("[18:42:38] Lord Vasily Ghrazi: This world will belong to the SANGUIN
 eq(C.parse("<col=ff0000>Lady Karmina Ghrazi</col>: Nowhere is beyond our reach!").knight, R.KARMINA, "colour tags");
 eq(C.parse("[18:43:13] You can't throw bombs that quickly."), null, "game messages ignored");
 
+// Lines as text recognition might return them
+let m = C.match("[18:38:50] FALL IN LINE!");                          // name not read
+eq(m && m.knight, R.VASILY, "no name: Vasily's own line still recognised");
+m = C.match("[18:38:50] Lord Vasily Ghrazi: FALL IN LlNEl");           // ! read as l
+eq(m && m.call, "fall in line!", "garbled '!' still matches");
+m = C.match("[18:43:35] Your blood becomes tribute!");
+eq(m && m.knight, R.KARMINA, "no name, normal casing -> Karmina's bleed");
+m = C.match("[18:43:35] YOUR BLOOD BECOMES TRIBUTE!");
+eq(m && m.knight, R.VASILY, "no name, capitals -> Vasily's Floor Bomb");
+m = C.match("[18:38:40] Just give in. Join us.");
+eq(m && m.kind, "start", "kill start without name");
+eq(C.match("[18:39:00] Zanutra: SUFFER UNTO ME!"), null, "player typing a call is ignored");
+m = C.match("[18:44:10] Lady Karmina Ghrazi: We must PERSIST!");
+eq(m && m.kind, "phase", "phase line recognised");
+f = new R.Fight();
+for (const line of ["[1] Just give in. Join us.", "[2] FALL IN LINE!", "[3] PRAISE THE SANGUINE"]) {
+  const mm = C.match(line);
+  if (mm.kind === "start") f.start(); else f.onCall(mm.knight, mm.call, 0);
+}
+eq(f.phase, 2, "nameless lines drive the tracker");
+eq(nextKey(f, R.VASILY), "mind_flail", "…and keep the rotation");
+
 console.log(`${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -26,6 +26,7 @@
   li.next { border-left-color: var(--next); background: #1c2a1d; }
   li.next .name { color: var(--next); }
   details { padding: 6px 10px 10px; color: var(--dim); }
+  pre { white-space: pre-wrap; word-break: break-word; font: 11px monospace; color: var(--text); background: var(--panel); border: 1px solid var(--line); padding: 4px; margin: 0; }
   textarea { width: 100%; height: 70px; background: var(--panel); color: var(--text); border: 1px solid var(--line); font: 11px monospace; }
 </style>
 </head>
@@ -54,6 +55,12 @@
 <ol id="rotation"></ol>
 
 <details>
+  <summary>Chat lines read</summary>
+  <p>The last lines Alt1 read from your chat. ✓ = recognised as a knight's line.</p>
+  <pre id="debug">(nothing read yet)</pre>
+</details>
+
+<details>
   <summary>Test without Alt1</summary>
   <p>Paste chat lines (one per line) and press Send.</p>
   <textarea id="testinput" placeholder="[18:38:50] Lord Vasily Ghrazi: FALL IN LINE!"></textarea>
@@ -67,7 +74,7 @@
   (function () {
     var CDNS = ["https://unpkg.com/alt1/dist/", "https://cdn.jsdelivr.net/npm/alt1/dist/"];
     var LIBS = ["base/index.js", "ocr/index.js", "chatbox/index.js"];
-    var V = "3"; // bump on every update so Alt1 does not use cached files
+    var V = "4"; // bump on every update so Alt1 does not use cached files
     var APP = ["rotation.js?v=" + V, "chat.js?v=" + V, "app.js?v=" + V];
 
     function load(src, ok, fail) {
