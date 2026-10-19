@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ghrazi Rotation</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #14110f; --panel: #1f1a17; --line: #3a302a; --text: #e9e2d8; --dim: #9c9087;
+    --accent: #c8323c; --next: #5fd16a; --bad: #ff8a75;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 13px/1.35 "Segoe UI", Arial, sans-serif; }
+  header { padding: 8px 10px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  #phase { font-weight: 700; font-size: 15px; color: #f0c27a; }
+  #who { color: var(--dim); margin-top: 2px; }
+  #status { color: var(--dim); font-size: 11px; margin-top: 4px; }
+  #status.bad { color: var(--bad); }
+  .row { display: flex; gap: 4px; padding: 6px 10px; flex-wrap: wrap; align-items: center; }
+  button { background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 4px; padding: 3px 8px; cursor: pointer; font: inherit; }
+  button.on { border-color: var(--accent); background: #3a1d1f; }
+  ol { list-style: none; margin: 0; padding: 4px 6px; }
+  li { padding: 5px 8px; border-left: 3px solid transparent; border-radius: 3px; }
+  li .name { font-weight: 600; }
+  li.next { border-left-color: var(--next); background: #1c2a1d; }
+  li.next .name { color: var(--next); }
+  details { padding: 6px 10px 10px; color: var(--dim); }
+  textarea { width: 100%; height: 70px; background: var(--panel); color: var(--text); border: 1px solid var(--line); font: 11px monospace; }
+</style>
+</head>
+<body>
+<header>
+  <div id="phase">Waiting for the fight</div>
+  <div id="who"></div>
+  <div id="status"></div>
+</header>
+
+<div class="row">
+  <button data-tank="vasily">Vasily tank</button>
+  <button data-tank="karmina">Karmina tank</button>
+</div>
+
+<div class="row">
+  <button data-phase="1">P1</button><button data-phase="2">P2</button><button data-phase="3">P3</button>
+  <button data-phase="4">P4</button><button data-phase="5">P5</button>
+  <button id="reset" title="Clear the tracker">Reset</button>
+</div>
+<div class="row" id="p3" hidden>
+  <span style="color:var(--dim)">Phase 3:</span>
+  <button id="below">I stay below</button><button id="up">I'm at the heart</button>
+</div>
+
+<ol id="rotation"></ol>
+
+<details>
+  <summary>Test without Alt1</summary>
+  <p>Paste chat lines (one per line) and press Send.</p>
+  <textarea id="testinput" placeholder="[18:38:50] Lord Vasily Ghrazi: FALL IN LINE!"></textarea>
+  <button id="testsend">Send</button>
+</details>
+
+<!-- Alt1 libraries (Skillbert's alt1 packages). If the app says the chatbox
+     library did not load, check these two URLs (see README). -->
+<script src="https://unpkg.com/@alt1/base/dist/index.js"></script>
+<script src="https://unpkg.com/@alt1/chatbox/dist/index.js"></script>
+
+<script src="rotation.js"></script>
+<script src="chat.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

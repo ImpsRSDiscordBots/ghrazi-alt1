@@ -1,0 +1,14 @@
+{
+  "appName": "Ghrazi Rotation",
+  "description": "Rotation of the Ghrazi Blood Knight you tank, following the knights' lines in the chatbox.",
+  "appUrl": "./index.html",
+  "configUrl": "./appconfig.json",
+  "iconUrl": "./icon.png",
+  "defaultWidth": 300,
+  "defaultHeight": 420,
+  "minWidth": 220,
+  "minHeight": 200,
+  "maxWidth": 600,
+  "maxHeight": 900,
+  "permissions": "pixel"
+}
