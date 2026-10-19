@@ -67,7 +67,8 @@
   (function () {
     var CDNS = ["https://unpkg.com/alt1/dist/", "https://cdn.jsdelivr.net/npm/alt1/dist/"];
     var LIBS = ["base/index.js", "ocr/index.js", "chatbox/index.js"];
-    var APP = ["rotation.js", "chat.js", "app.js"];
+    var V = "3"; // bump on every update so Alt1 does not use cached files
+    var APP = ["rotation.js?v=" + V, "chat.js?v=" + V, "app.js?v=" + V];
 
     function load(src, ok, fail) {
       var s = document.createElement("script");
