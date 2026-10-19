@@ -60,13 +60,30 @@
   <button id="testsend">Send</button>
 </details>
 
-<!-- Alt1 libraries (Skillbert's alt1 packages). If the app says the chatbox
-     library did not load, check these two URLs (see README). -->
-<script src="https://unpkg.com/@alt1/base/dist/index.js"></script>
-<script src="https://unpkg.com/@alt1/chatbox/dist/index.js"></script>
+<script>
+  // Load Skillbert's Alt1 libraries (npm package "alt1") in order:
+  // base (A1lib) -> ocr (OCR) -> chatbox (Chatbox). Each file is tried on two
+  // CDNs. Then the app itself loads. If a library fails, the app shows which.
+  (function () {
+    var CDNS = ["https://unpkg.com/alt1/dist/", "https://cdn.jsdelivr.net/npm/alt1/dist/"];
+    var LIBS = ["base/index.js", "ocr/index.js", "chatbox/index.js"];
+    var APP = ["rotation.js", "chat.js", "app.js"];
 
-<script src="rotation.js"></script>
-<script src="chat.js"></script>
-<script src="app.js"></script>
+    function load(src, ok, fail) {
+      var s = document.createElement("script");
+      s.src = src; s.onload = ok; s.onerror = fail;
+      document.body.appendChild(s);
+    }
+    function loadLib(i, done) {
+      if (i >= LIBS.length) return done();
+      (function tryCdn(c) {
+        if (c >= CDNS.length) { window.__alt1LibError = LIBS[i]; return done(); }
+        load(CDNS[c] + LIBS[i], function () { loadLib(i + 1, done); }, function () { tryCdn(c + 1); });
+      })(0);
+    }
+    function loadApp(i) { if (i < APP.length) load(APP[i], function () { loadApp(i + 1); }); }
+    loadLib(0, function () { loadApp(0); });
+  })();
+</script>
 </body>
 </html>

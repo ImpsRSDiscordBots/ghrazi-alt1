@@ -88,7 +88,10 @@
     if (!alt1.permissionPixel) { status("Alt1 needs the 'view screen' permission for this app (app settings).", true); return; }
 
     const Reader = window.Chatbox && (window.Chatbox.default || window.Chatbox);
-    if (typeof Reader !== "function") { status("Alt1 chatbox library did not load (see README).", true); return; }
+    if (typeof Reader !== "function") {
+      status("Alt1 library did not load: " + (window.__alt1LibError || "chatbox") + " (check your internet / see README).", true);
+      return;
+    }
 
     const reader = new Reader();
     let found = false;
