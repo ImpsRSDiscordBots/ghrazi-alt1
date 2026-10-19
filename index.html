@@ -58,6 +58,7 @@
   <summary>Chat lines read</summary>
   <p>The last lines Alt1 read from your chat. ✓ = recognised as a knight's line.</p>
   <pre id="debug">(nothing read yet)</pre>
+  <p><button id="copylog" title="Copy the last 200 lines and what the app did with them">Copy log</button></p>
 </details>
 
 <details>
@@ -74,7 +75,7 @@
   (function () {
     var CDNS = ["https://unpkg.com/alt1/dist/", "https://cdn.jsdelivr.net/npm/alt1/dist/"];
     var LIBS = ["base/index.js", "ocr/index.js", "chatbox/index.js"];
-    var V = "5"; // bump on every update so Alt1 does not use cached files
+    var V = "6"; // bump on every update so Alt1 does not use cached files
     var APP = ["rotation.js?v=" + V, "chat.js?v=" + V, "app.js?v=" + V];
 
     function load(src, ok, fail) {

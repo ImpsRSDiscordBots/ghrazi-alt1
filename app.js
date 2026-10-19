@@ -18,6 +18,7 @@
   // ---- handling one chat line (from Alt1 or the test box) ------------------
   // Alt1's chatbox reader already returns only NEW lines, so no de-duplication here.
   const recent = [];                     // last lines read, for the diagnosis box
+  const log = [];                        // longer log for "Copy log"
   function handleLine(raw) {
     const line = String(raw || "").trim();
     if (!line) return;
@@ -25,10 +26,33 @@
     recent.push((m ? "✓ " : "· ") + line);
     if (recent.length > 8) recent.shift();
     $("debug").textContent = recent.join("\n");
-    if (!m) return;
 
-    if (m.kind === "start") { fight.start(); render(); return; }
-    if (fight.onCall(m.knight, m.call, Date.now())) render();
+    let result = "-";
+    if (m && m.kind === "start") { fight.start(); render(); result = "START"; }
+    else if (m) {
+      const key = fight.onCall(m.knight, m.call, Date.now());
+      if (key) render();
+      result = `${m.kind}:${key || "?"} knight=${m.knight || "?"}`;
+    }
+    // what the tracker looks like after this line
+    const state = fight.active ? `P${fight.phase} next=${fight.nextSlot + 1}` : "idle";
+    log.push(`${line}  ->  ${result}  [${state}]`);
+    if (log.length > 200) log.shift();
+  }
+
+  function copyLog() {
+    const text = log.join("\n") || "(empty)";
+    const done = () => { $("copylog").textContent = "Copied!"; setTimeout(() => { $("copylog").textContent = "Copy log"; }, 1500); };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done, () => fallback()); }
+      else fallback();
+    } catch (e) { fallback(); }
+    function fallback() {   // older browsers (Alt1): select a hidden textarea and copy
+      const ta = document.createElement("textarea");
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); done(); } catch (e) { /* ignore */ }
+      ta.remove();
+    }
   }
 
   // ---- UI -------------------------------------------------------------------
@@ -72,6 +96,7 @@
     $("up").addEventListener("click", () => { fight.startPhase3(true); render(); });
     $("below").addEventListener("click", () => { fight.startPhase3(false); render(); });
     $("reset").addEventListener("click", () => { fight.reset(); render(); });
+    $("copylog").addEventListener("click", copyLog);
     $("testsend").addEventListener("click", () => {
       $("testinput").value.split("\n").forEach(handleLine);
       $("testinput").value = "";
