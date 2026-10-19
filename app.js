@@ -96,6 +96,19 @@
     }
 
     const reader = new Reader();
+    // The knights' lines use colours that are not in Alt1's default chat list
+    // (measured from an in-game screenshot): light green text and coloured names.
+    const EXTRA_COLORS = [
+      [153, 255, 153], [148, 245, 147],              // NPC chat text (light green)
+      [131, 19, 56], [127, 19, 55],                  // Lady Karmina Ghrazi (dark red)
+      [109, 87, 135], [106, 84, 130],                // Lord Vasily Ghrazi (grey purple)
+    ];
+    if (A1lib && A1lib.mixColor && reader.readargs && reader.readargs.colors) {
+      for (const [r, g, b] of EXTRA_COLORS) {
+        const c = A1lib.mixColor(r, g, b);
+        if (!reader.readargs.colors.includes(c)) reader.readargs.colors.push(c);
+      }
+    }
     let found = false;
     setInterval(() => {
       try {
